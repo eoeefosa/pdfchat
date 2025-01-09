@@ -13,26 +13,43 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function DarkModeToggle() {
-  const { setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
+
+  const getIcon = () => {
+    // Use resolvedTheme to reflect the active theme when "system" is selected
+    const activeTheme = theme === "system" ? resolvedTheme : theme;
+
+    switch (activeTheme) {
+      case "light":
+        return <Sun className="h-[1.2rem] w-[1.2rem]" />;
+      case "dark":
+        return <Moon className="h-[1.2rem] w-[1.2rem]" />;
+      default:
+        return (
+          <>
+            <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            {/* <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" /> */}
+          </>
+        );
+    }
+  };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon">
-          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
+          {getIcon()}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
+          Light Mode
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
+          Dark Mode
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("system")}>
-          System
+          System Default
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
