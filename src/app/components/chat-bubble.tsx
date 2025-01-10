@@ -17,6 +17,7 @@ import {
 
 import { Message } from "ai/react";
 import ReactMarkdown from "react-markdown";
+import { formattedSourceText } from "../lib/utils";
 
 const wrappedText = (text: string) =>
   text.split("/n").map((line, i) => {
@@ -59,25 +60,35 @@ export function ChatBubble({
           <Balancer>{wrappedMessage}</Balancer>
         </CardContent>
         <CardFooter>
-                  <CardDescription className="w-full">
-                      {sources && sources.length ? (
-                          <Accordion type="single" collapsible className="w-full">
-                              {sources.map((source, index) => (
-                                  <AccordionItem value={`Source-${index}`} key={index}>
-                                      <AccordionTrigger>{`source ${index +1}`}
-                                          
-                                      </AccordionTrigger>
-                                      <AccordionContent>
-                                          <ReactMarkdown linkTarget="_blank">
-                                              {wrappedMessage(source)}
-                                          </ReactMarkdown>
-                                      </AccordionContent>
-                                  </AccordionItem>
-                              ))}
-                          </Accordion>
-                              ):(
-                              <></>
-                      )}
+          <CardDescription className="w-full">
+            {sources && sources.length ? (
+              <Accordion type="single" collapsible className="w-full">
+                {sources.map((source, index) => (
+                  <AccordionItem value={`Source-${index}`} key={index}>
+                    <AccordionTrigger>{`source ${index + 1}`}</AccordionTrigger>
+                    <AccordionContent>
+                      <ReactMarkdown
+                        components={{
+                          a: ({ node, ...props }) => (
+                            <a
+                              {...props}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {props.children}
+                            </a>
+                          ),
+                        }}
+                      >
+                        {formattedSourceText(source)}
+                      </ReactMarkdown>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            ) : (
+              <></>
+            )}
           </CardDescription>
         </CardFooter>
       </Card>
