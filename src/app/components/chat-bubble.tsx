@@ -25,3 +25,62 @@ const wrappedText = (text: string) =>
       <br />
     </span>;
   });
+
+interface ChatBubbleProps extends Partial<Message> {
+  sources: string[];
+}
+
+export function ChatBubble({
+  role = "assistant",
+  content,
+  sources,
+}: ChatBubbleProps) {
+  if (!content) {
+    return null;
+  }
+
+  const wrappedMessage = wrappedText(content);
+
+  return (
+    <div>
+      <Card className="mb-2">
+        <CardHeader>
+          <CardTitle
+            className={
+              role != "assistant"
+                ? "text-amber-500 dark:text-amber-200"
+                : "text-blue-500 dark:text-blure-200"
+            }
+          >
+            {role == "assistant" ? "AI" : "you"}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="text-sm">
+          <Balancer>{wrappedMessage}</Balancer>
+        </CardContent>
+        <CardFooter>
+                  <CardDescription className="w-full">
+                      {sources && sources.length ? (
+                          <Accordion type="single" collapsible className="w-full">
+                              {sources.map((source, index) => (
+                                  <AccordionItem value={`Source-${index}`} key={index}>
+                                      <AccordionTrigger>{`source ${index +1}`}
+                                          
+                                      </AccordionTrigger>
+                                      <AccordionContent>
+                                          <ReactMarkdown linkTarget="_blank">
+                                              {wrappedMessage(source)}
+                                          </ReactMarkdown>
+                                      </AccordionContent>
+                                  </AccordionItem>
+                              ))}
+                          </Accordion>
+                              ):(
+                              <></>
+                      )}
+          </CardDescription>
+        </CardFooter>
+      </Card>
+    </div>
+  );
+}
